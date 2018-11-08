@@ -11,10 +11,19 @@ module.exports = (sequelize, DataTypes) => {
             },
             blogTitle: DataTypes.STRING,
             blogMessage: DataTypes.STRING,
-            blogLikes: DataTypes.INTEGER,
-            blogPhoto: DataTypes.STRING,
+            blogLikes: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0
+            },
+            blogPhoto: {
+                type: DataTypes.STRING,
+                defaultValue: 'Photo Here'
+            },
             blogDate: DataTypes.DATE,
-            deleted: DataTypes.BOOLEAN
+            deleted: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: 0
+            }
         },
         {
             timestamps: false

@@ -82,12 +82,13 @@ router.post('/blogList', (req, res) => {
   models.blogPosts.findOrCreate({
     where: {
       blogTitle: req.body.blogTitle,
+      blogMessage: req.body.blogMessage
     }
   }).spread(function(result, created) {
     if (created) {
-      res.send('Created.');
+      console.log("Created.");
     }else {
-      res.send('Not Created');
+      console.log('Not Created');
     }
   })
 })
