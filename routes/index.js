@@ -19,7 +19,7 @@ router.get('/blogPosts', function(req, res, next) {
 
 /*For Front End App */
 router.get('/blogList', function(req, res, next){
-  models.blogPosts.findAll({}).then(resObj => {
+  models.blogPosts.findAll({where: {deleted: false}}).then(resObj => {
     const postsMap = resObj.map(blogPosts => ({
       blogId: blogPosts.blogId,
       blogTitle: blogPosts.blogTitle,
@@ -50,7 +50,7 @@ router.get('/blog/:id', function(req, res, next) {
     res.render('specificBlog', {blog: blog});
   });
 });
-/*This route is for the front end app only*/
+/*This route is for the front end app*/
 router.get('/blogList/:id', function(req, res, next) {
   let bId = parseInt(req.params.id);
   models.blogPosts.find({
@@ -63,7 +63,7 @@ router.get('/blogList/:id', function(req, res, next) {
     console.log('Specific Blog Sent.')
   });
 });
-/*This route is for Back End WORKING*/
+/*This route is for front End*/
 router.put('/blogList/:id', function(req, res, next) {
   let blId = parseInt(req.params.id);
   models.blogPosts.update(
@@ -77,7 +77,7 @@ router.put('/blogList/:id', function(req, res, next) {
     console.log('Updated.')
   });
 });
-
+/*This route for Front End */
 router.post('/blogList', (req, res) => {
   models.blogPosts.findOrCreate({
     where: {
@@ -92,5 +92,15 @@ router.post('/blogList', (req, res) => {
     }
   })
 })
+/*For Front End*/
+router.delete('/blogList/:id/delete', (req, res) => {
+  let bloId = parseInt(req.params.id);
+  models.blogPosts.update(
+    {deleted: true},
+    {where: {blogId: bloId}}
+  ).then(blg => {
+    res.send();
+  });
+});
 
 module.exports = router;
