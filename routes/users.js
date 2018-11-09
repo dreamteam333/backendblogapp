@@ -15,13 +15,26 @@ router.get('/admin', function(req, res, next) {
       lastName: users.lastName,
       userPhoto: users.userPhoto,
       birthDay: users.birthDay,
-      userEmail: users. userEmail,
+      userEmail: users.userEmail,
       phoneNumer: users.phoneNumer,
       userCreatedDate: users.userCreatedDate,
       userAdmin: users.userAdmin,
       deleted: users.deleted
     }));
     res.send(JSON.stringify(usrMap));
+  });
+});
+
+router.get('/profile/:id', function(req, res, next) {
+  let prflId = parseInt(req.params.id);
+  models.users.find({
+    where: {
+      userId: prflId
+    }
+  }).then(usr => {
+    res.send(JSON.stringify(usr));
+    console.log(JSON.stringify(usr));
+    console.log('Specific Profile Sent.')
   });
 });
 
