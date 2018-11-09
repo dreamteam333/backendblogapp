@@ -17,7 +17,7 @@ router.get('/blogPosts', function(req, res, next) {
   });
 });
 
-/*For Front End App */
+/*For Front End App GET all non-deleted blogs.*/
 router.get('/blogList', function(req, res, next){
   models.blogPosts.findAll({where: {deleted: false}}).then(resObj => {
     const postsMap = resObj.map(blogPosts => ({
