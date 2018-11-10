@@ -80,4 +80,14 @@ router.put('/profile/:id', function(req, res, next) {
   });
 });
 
+router.delete('/profile/:id/delete', (req, res) => {
+  let uId = parseInt(req.params.id);
+  models.users.update(
+    {deleted: true},
+    {where: {userId: uId}}
+  ).then(r => {
+    res.send();
+  });
+});
+
 module.exports = router;
