@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/admin', function(req, res, next) {
-  models.users.findAll({where: {deleted: "false"}}).then(usrObj => {
+  models.users.findAll({where: {deleted: false}}).then(usrObj => {
     const usrMap = usrObj.map(users => ({
       userId: users.userId,
       firstName: users.firstName,
@@ -19,7 +19,9 @@ router.get('/admin', function(req, res, next) {
       phoneNumer: users.phoneNumer,
       userCreatedDate: users.userCreatedDate,
       userAdmin: users.userAdmin,
-      deleted: users.deleted
+      deleted: users.deleted,
+      userName: users.userName,
+      passWord: users.passWord
     }));
     res.send(JSON.stringify(usrMap));
   });
@@ -34,7 +36,47 @@ router.get('/profile/:id', function(req, res, next) {
   }).then(usr => {
     res.send(JSON.stringify(usr));
     console.log(JSON.stringify(usr));
-    console.log('Specific Profile Sent.')
+    console.log(usr.firstName + ' ' + 'Specific Profile Sent.')
+  });
+});
+
+router.post('/signup', (req, res) => {
+  models.users.findOne({
+    where: {userName: req.body.userName}
+  }).then(user => {
+    if (user) {
+      console.log('User Already Exists.');
+    } else {
+      models.users.create({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        userPhoto: req.body.userPhoto,
+        birthDay: req.body.birthDay,
+        userEmail: req.body.userEmail,
+        phoneNumer: req.body.phoneNumer,
+        userName: req.body.userName,
+        passWord: req.body.passWord
+      });
+      console.log('User Created.');
+    }
+  });
+});
+
+router.put('/profile/:id', function(req, res, next) {
+  let uId = parseInt(req.params.id);
+  models.users.update(
+    {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      userPhoto: req.body.userPhoto,
+      birthDay: req.body.birthDay,
+      userEmail: req.body.userEmail,
+      phoneNumer: req.body.phoneNumer
+    },
+    {where: {userId: uId}}
+  ).then(r => {
+    res.send();
+    console.log('Updated.')
   });
 });
 

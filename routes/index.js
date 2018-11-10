@@ -90,8 +90,8 @@ router.post('/blogList', (req, res) => {
     }else {
       console.log('Not Created');
     }
-  })
-})
+  });
+});
 /*For Front End*/
 router.delete('/blogList/:id/delete', (req, res) => {
   let bloId = parseInt(req.params.id);
