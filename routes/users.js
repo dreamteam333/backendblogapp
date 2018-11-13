@@ -2,11 +2,7 @@ var express = require('express');
 var router = express.Router();
 const sqlite = require('sqlite3').verbose();
 var models = require('../models');
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
+/*GET all Users.*/
 router.get('/admin', function(req, res, next) {
   models.users.findAll({where: {deleted: false}}).then(usrObj => {
     const usrMap = usrObj.map(users => ({
@@ -26,7 +22,7 @@ router.get('/admin', function(req, res, next) {
     res.send(JSON.stringify(usrMap));
   });
 });
-
+/*GET specific Users.*/
 router.get('/profile/:id', function(req, res, next) {
   let prflId = parseInt(req.params.id);
   models.users.find({
@@ -39,7 +35,7 @@ router.get('/profile/:id', function(req, res, next) {
     console.log(usr.firstName + ' ' + 'Specific Profile Sent.')
   });
 });
-
+/*CREATE a User.*/
 router.post('/signup', (req, res) => {
   models.users.findOne({
     where: {userName: req.body.userName}
@@ -61,7 +57,7 @@ router.post('/signup', (req, res) => {
     }
   });
 });
-
+/*UPDATE a User. */
 router.put('/profile/:id', function(req, res, next) {
   let uId = parseInt(req.params.id);
   models.users.update(
@@ -79,7 +75,7 @@ router.put('/profile/:id', function(req, res, next) {
     console.log('Updated.')
   });
 });
-
+/*DELETE a User.*/
 router.delete('/profile/:id/delete', (req, res) => {
   let uId = parseInt(req.params.id);
   models.users.update(

@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
             deleted: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: 0
+            },
+            blogViews: {
+                type: DataTypes.INTEGER,
+                defaultValue: 0
             }
         },
         {

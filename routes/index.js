@@ -8,14 +8,6 @@ const db = new sqlite.Database('./blogApp.sqlite', err => {
   console.log('Database has been connected.');
 });
 /*--Blog Code Follows*/
-/*For Back End App */
-router.get('/blogPosts', function(req, res, next) {
-  models.blogPosts.findAll({}).then(pstFnd => {
-    res.render('blogPosts', {
-      blogPosts: pstFnd
-    })
-  });
-});
 
 /*For Front End App GET all non-deleted blogs.*/
 router.get('/blogList', function(req, res, next){
@@ -27,13 +19,14 @@ router.get('/blogList', function(req, res, next){
       blogLikes: blogPosts.blogLikes,
       blogPhoto: blogPosts.blogPhoto,
       blogDate: blogPosts.blogDate,
-      deleted: blogPosts.deleted
+      deleted: blogPosts.deleted,
+      blogViews: blogPosts.blogViews
     }));
     res.send(JSON.stringify(postsMap));
     /*console.log(JSON.stringify(postsMap));*/
   });
 });
-
+/*BackEnd GET*/
 router.get('/blog', function(req, res, next) {
   models.blogPosts.find({
     where: {blogId: 2}
@@ -41,16 +34,8 @@ router.get('/blog', function(req, res, next) {
     res.render('specificBlog', {blog: blog});
   });
 });
-/*This route is for this back end app not for the front end.*/
-router.get('/blog/:id', function(req, res, next) {
-  let blgId = parseInt(req.params.id);
-  models.blogPosts.find({
-    where: {blogId: blgId}
-  }).then(blog => {
-    res.render('specificBlog', {blog: blog});
-  });
-});
-/*This route is for the front end app*/
+
+/*This route is for the front end app GET Specific Blog.*/
 router.get('/blogList/:id', function(req, res, next) {
   let bId = parseInt(req.params.id);
   models.blogPosts.find({
@@ -63,7 +48,7 @@ router.get('/blogList/:id', function(req, res, next) {
     console.log('Specific Blog Sent.')
   });
 });
-/*This route is for front End*/
+/*This route is for front End UPDATE a Blog.*/
 router.put('/blogList/:id', function(req, res, next) {
   let blId = parseInt(req.params.id);
   models.blogPosts.update(
@@ -77,7 +62,7 @@ router.put('/blogList/:id', function(req, res, next) {
     console.log('Updated.')
   });
 });
-/*This route for Front End */
+/*This route for Front End CREATE a Blog.*/
 router.post('/blogList', (req, res) => {
   models.blogPosts.findOrCreate({
     where: {
@@ -92,7 +77,7 @@ router.post('/blogList', (req, res) => {
     }
   });
 });
-/*For Front End*/
+/*For Front End DELETE a Blog.*/
 router.delete('/blogList/:id/delete', (req, res) => {
   let bloId = parseInt(req.params.id);
   models.blogPosts.update(
