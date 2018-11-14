@@ -50,5 +50,10 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: false
         }
     );
+    users.associate = function(models) {
+        users.hasMany(models.comments, {
+            foreignKey: 'userId'
+        });
+    };
     return users;    
 };

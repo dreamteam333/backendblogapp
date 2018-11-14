@@ -7,7 +7,7 @@ const db = new sqlite.Database('./blogApp.sqlite', err => {
   if (err) {return console.error(err.message);}
   console.log('Database has been connected.');
 });
-/*--Blog Code Follows*/
+
 
 /*For Front End App GET all non-deleted blogs.*/
 router.get('/blogList', function(req, res, next){
@@ -24,6 +24,21 @@ router.get('/blogList', function(req, res, next){
     }));
     res.send(JSON.stringify(postsMap));
     /*console.log(JSON.stringify(postsMap));*/
+  });
+});
+
+router.get('/comments', function(req, res, next){
+  models.comments.findAll({where: {deleted: false}}).then(resObj => {
+    const comMap = resObj.map(com => ({
+      comId: com.comId,
+      comMessage: com.comMessage,
+      blogId: com.blogId,
+      userId: com.userId,
+      comLikes: com.comLikes,
+      comCreatedDate: com.comCreatedDate,
+      deleted: com.deleted
+    }));
+    res.send(JSON.stringify(comMap));
   });
 });
 /*BackEnd GET*/
@@ -48,6 +63,17 @@ router.get('/blogList/:id', function(req, res, next) {
     console.log('Specific Blog Sent.')
   });
 });
+/*GET Specific Comment*/
+router.get('/comments/:id', function(req, res, next) {
+  let cmId = parseInt(req.params.id)
+  models.comments.find(
+    {where:{comId: cmId, deleted: false},
+    include: [models.blogPosts, models.users]
+  }).then(com => {
+  res.send(JSON.stringify(com))
+  });
+});
+
 /*This route is for front End UPDATE a Blog.*/
 router.put('/blogList/:id', function(req, res, next) {
   let blId = parseInt(req.params.id);
@@ -62,6 +88,20 @@ router.put('/blogList/:id', function(req, res, next) {
     console.log('Updated.')
   });
 });
+/*UPDATE Specific Comment.*/
+router.put('/comments/:id', function(req, res, next) {
+  let cmntId = parseInt(req.params.id);
+  models.comments.update(
+    {
+      comMessage: req.body.comMessage
+    },
+    {where: {comId: cmntId},
+  }).then(r => {
+    res.send();
+    console.log('Updated.')
+  });
+});
+
 /*This route for Front End CREATE a Blog.*/
 router.post('/blogList', (req, res) => {
   models.blogPosts.findOrCreate({
@@ -77,6 +117,19 @@ router.post('/blogList', (req, res) => {
     }
   });
 });
+/*CREATE a comment*/
+router.post('/comments', (req, res) => {
+  models.comments.create({
+    comMessage: req.body.comMessage
+  }).then(function(result, created) {
+    if (created) {
+      console.log("Created.");
+    }else {
+      console.log('Not Created');
+    }
+  });
+});
+
 /*For Front End DELETE a Blog.*/
 router.delete('/blogList/:id/delete', (req, res) => {
   let bloId = parseInt(req.params.id);
@@ -84,6 +137,16 @@ router.delete('/blogList/:id/delete', (req, res) => {
     {deleted: true},
     {where: {blogId: bloId}}
   ).then(blg => {
+    res.send();
+  });
+});
+/*DELETE a Comment Admin Only*/
+router.delete('/comments/:id/delete', (req, res) => {
+  let commId = parseInt(req.params.id);
+  models.comments.update(
+    {deleted: true},
+    {where: {comId: commId}}
+  ).then(com => {
     res.send();
   });
 });

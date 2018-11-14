@@ -33,5 +33,10 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: false
         }
     );
+    blogPosts.associate = function(models) {
+        blogPosts.hasMany(models.comments, {
+            foreignKey: 'blogId'
+        });
+    };
     return blogPosts;    
 };
