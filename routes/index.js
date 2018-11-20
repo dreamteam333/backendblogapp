@@ -2,12 +2,16 @@ var express = require('express');
 var router = express.Router();
 const sqlite = require('sqlite3').verbose();
 var models = require('../models');
+var fs = require('fs-extra');
 
 const db = new sqlite.Database('./blogApp.sqlite', err => {
   if (err) {return console.error(err.message);}
   console.log('Database has been connected.');
 });
 
+router.get('/', function(req, res, next) {
+  res.render('index');
+});
 
 /*For Front End App GET all non-deleted blogs.*/
 router.get('/blogList', function(req, res, next){
@@ -129,6 +133,22 @@ router.post('/comments', (req, res) => {
     }
   });
 });
+
+router.post('/upload', function(req, res) {
+  var fstream;
+  req.pipe(req.busboy);
+  req.busboy.on('file', function (fieldname, file, filename) {
+      console.log("Uploading: " + filename);
+
+      //Path where image will be uploaded
+      fstream = fs.createWriteStream('img/' + filename);
+      file.pipe(fstream);
+      fstream.on('close', function () {    
+          console.log("Upload Finished of " + filename);              
+          res.redirect('back');           //where to go next
+      });
+  });
+})
 
 /*For Front End DELETE a Blog.*/
 router.delete('/blogList/:id/delete', (req, res) => {
