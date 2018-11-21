@@ -4,18 +4,15 @@ const sqlite = require('sqlite3').verbose();
 var models = require('../models');
 var fs = require('fs-extra');
 
-const db = new sqlite.Database('./blogApp.sqlite', err => {
-  if (err) {return console.error(err.message);}
-  console.log('Database has been connected.');
-});
-
 router.get('/', function(req, res, next) {
   res.render('index');
 });
 
 /*For Front End App GET all non-deleted blogs.*/
 router.get('/blogList', function(req, res, next){
-  models.blogPosts.findAll({where: {deleted: false}}).then(resObj => {
+  models.blogPosts.findAll({
+    where: {deleted: false}
+  }).then(resObj => {
     const postsMap = resObj.map(blogPosts => ({
       blogId: blogPosts.blogId,
       blogTitle: blogPosts.blogTitle,
@@ -84,7 +81,8 @@ router.put('/blogList/:id', function(req, res, next) {
   models.blogPosts.update(
     {
       blogTitle: req.body.blogTitle,
-      blogMessage: req.body.blogMessage
+      blogMessage: req.body.blogMessage,
+      blogPhoto: req.body.blogPhoto
     },
     {where: {blogId: blId}}
   ).then(r => {
@@ -134,19 +132,18 @@ router.post('/comments', (req, res) => {
   });
 });
 
-router.post('/upload', function(req, res) {
+router.post('/uploadBlgImg/:id', function(req, res) {
+  let imId = parseInt(req.params.id);
   var fstream;
   req.pipe(req.busboy);
   req.busboy.on('file', function (fieldname, file, filename) {
-      console.log("Uploading: " + filename);
-
-      //Path where image will be uploaded
-      fstream = fs.createWriteStream('img/' + filename);
+      console.log("Now Uploading: " + filename);
+      fstream = fs.createWriteStream('public/images/' + (imId + 'blgimg' + filename));
       file.pipe(fstream);
       fstream.on('close', function () {    
-          console.log("Upload Finished of " + filename);              
-          res.redirect('back');           //where to go next
+          console.log("Finished Upload of: " + filename);              
       });
+      res.send(JSON.stringify(filename + ' has been uploaded.'));
   });
 })
 
