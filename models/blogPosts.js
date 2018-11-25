@@ -19,7 +19,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 defaultValue: 'Photo Here'
             },
-            blogDate: DataTypes.DATE,
+            blogDate: {
+                type: DataTypes.DATE,
+                defaultValue: Date.now
+            },
             deleted: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: 0

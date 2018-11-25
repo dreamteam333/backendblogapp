@@ -27,7 +27,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 defaultValue: 'PhoneNumber Here'
             },
-            userCreatedDate: DataTypes.DATE,
+            userCreatedDate: {
+                type: DataTypes.DATE,
+                defaultValue: Date.now
+            },
             userAdmin: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false
