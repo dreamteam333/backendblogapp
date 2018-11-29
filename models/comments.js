@@ -10,8 +10,14 @@ module.exports = (sequelize, DataTypes) => {
                 primaryKey: true
             },
             comMessage: DataTypes.STRING,
-            blogId: DataTypes.INTEGER,
-            userId: DataTypes.INTEGER,
+            blogId: {
+                type: DataTypes.INTEGER,
+                defaultValue: 1
+            },
+            userId: {
+                type: DataTypes.INTEGER,
+                defaultValue: 1
+            },
             comLikes: {
                 type: DataTypes.INTEGER,
                 defaultValue: 0

@@ -57,7 +57,8 @@ router.get('/blogList/:id', function(req, res, next) {
   models.blogPosts.find({
     where: {
       blogId: bId
-    }
+    },
+    include: [models.comments]
   }).then(blog => {
     res.send(JSON.stringify(blog));
     console.log(JSON.stringify(blog));
@@ -66,12 +67,22 @@ router.get('/blogList/:id', function(req, res, next) {
 });
 /*GET Specific Comment*/
 router.get('/comments/:id', function(req, res, next) {
-  let cmId = parseInt(req.params.id)
+  let cmId = parseInt(req.params.id);
   models.comments.find(
     {where:{comId: cmId, deleted: false},
     include: [models.blogPosts, models.users]
   }).then(com => {
-  res.send(JSON.stringify(com))
+  res.send(JSON.stringify(com));
+  });
+});
+/*GET Com for BlogId*/
+router.get('/com/:id', function(req, res, next) {
+  let cId = parseInt(req.params.id);
+  models.comments.findAll({
+    where: {blogId: cId, deleted: false},
+    include: [models.users]
+  }).then(com => {
+    res.send(JSON.stringify(com));
   });
 });
 
