@@ -1,7 +1,10 @@
 {
   "development": {
-    "dialect": "sqlite",
-    "storage": "./blogApp.sqlite"
+    "username": "dtblogapp",
+    "password": "Cv0Cd9~y!ijN",
+    "database": "dtblogapp",
+    "dialect": "mysql",
+    "host": "den1.mysql3.gear.host"
   },
   "test": {
     "username": "root",

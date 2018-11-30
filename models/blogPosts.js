@@ -19,9 +19,16 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 defaultValue: 'Photo Here'
             },
-            blogDate: DataTypes.DATE,
+            blogDate: {
+                type: DataTypes.DATE,
+                defaultValue: Date.now
+            },
             deleted: {
                 type: DataTypes.BOOLEAN,
+                defaultValue: 0
+            },
+            blogViews: {
+                type: DataTypes.INTEGER,
                 defaultValue: 0
             }
         },
@@ -29,5 +36,10 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: false
         }
     );
+    blogPosts.associate = function(models) {
+        blogPosts.hasMany(models.comments, {
+            foreignKey: 'blogId'
+        });
+    };
     return blogPosts;    
 };
