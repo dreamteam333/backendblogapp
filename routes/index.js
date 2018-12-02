@@ -133,12 +133,10 @@ router.post('/blogList', (req, res) => {
 /*CREATE a comment*/
 router.post('/comments/:id', (req, res) => {
   let bId = parseInt(req.params.id);
-  models.comments.create(
-    {
+  models.comments.create({
       comMessage: req.body.comMessage,
       blogId: bId
-    }
-    ).then(function(result, created) {
+    }).then(function(result, created) {
     if (created) {
       console.log("Created.");
     }else {
