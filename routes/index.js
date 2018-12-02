@@ -77,9 +77,9 @@ router.get('/comments/:id', function(req, res, next) {
 });
 /*GET Com for BlogId*/
 router.get('/com/:id', function(req, res, next) {
-  let cId = parseInt(req.params.id);
+  let bId = parseInt(req.params.id);
   models.comments.findAll({
-    where: {blogId: cId, deleted: false},
+    where: {blogId: bId, deleted: false},
     include: [models.users]
   }).then(com => {
     res.send(JSON.stringify(com));
@@ -131,10 +131,14 @@ router.post('/blogList', (req, res) => {
   });
 });
 /*CREATE a comment*/
-router.post('/comments', (req, res) => {
-  models.comments.create({
-    comMessage: req.body.comMessage
-  }).then(function(result, created) {
+router.post('/comments/:id', (req, res) => {
+  let bId = parseInt(req.params.id);
+  models.comments.create(
+    {
+      comMessage: req.body.comMessage,
+      blogId: bId
+    }
+    ).then(function(result, created) {
     if (created) {
       console.log("Created.");
     }else {

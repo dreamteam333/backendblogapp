@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
             comMessage: DataTypes.STRING,
             blogId: {
                 type: DataTypes.INTEGER,
-                defaultValue: 1
             },
             userId: {
                 type: DataTypes.INTEGER,
