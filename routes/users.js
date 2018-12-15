@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const sqlite = require('sqlite3').verbose();
 var models = require('../models');
+const auth = require("../config/auth");
 /*GET all Users.*/
 router.get('/admin', function(req, res, next) {
   models.users.findAll({where: {deleted: false}}).then(usrObj => {
@@ -57,6 +57,56 @@ router.post('/signup', (req, res) => {
     }
   });
 });
+
+/*router.post('/login', function(req, res, next) {
+  models.users.findOne(
+    {
+      where: {
+        userName: req.body.userName
+      }
+    })
+    .then(user => {
+      if(!user){
+        console.log('Not User!');
+        res.status(500).send({status: 500, message: 'User Not Found!', type: 'Internal!'})
+      } else {
+      res.send(JSON.stringify(user));
+      console.log(JSON.stringify(user));
+      }
+    });
+});*/
+
+router.post('/login', function (req, res, next) {
+  models.users.findOne({
+    where: {
+      userName: req.body.userName,
+      passWord: req.body.passWord
+    }
+  }).then(user => {
+    console.log('login found a user')
+    if (!user) {
+      return res.status(401).json({
+        message: "Login Failed"
+      });
+    }
+    if (user) {
+      const usrId = user.userId;
+      const token = auth.signUser(user);
+      res.cookie('jwt', token);
+      res.send(JSON.stringify(user));
+    } else {
+      console.log(req.body.passWord);
+    }
+
+  });
+});
+
+router.get('/logout', function (req, res) {
+  res.cookie('jwt', null);
+  res.send({message: "Logged Out"})
+  console.log('Logged Out!');
+});
+
 /*UPDATE a User. */
 router.put('/profile/:id', function(req, res, next) {
   let uId = parseInt(req.params.id);
